@@ -1,7 +1,10 @@
-👾 Monster Escape
+**👾 Monster Escape**
+
 A single-player game where you control a monster trying to collect coins while avoiding a chasing robot. After collecting a coin, guide the monster to a door to bank the coin. Collect and bank 10 coins to win! Built using Python and Pygame.
 
-📁 Contents
+
+**📁 Contents**
+
 main.py: Main script that runs the game where the monster is controlled by the player and the robot chases it.
 
 monster.png: Sprite image for the monster (player).
@@ -13,7 +16,9 @@ coin.png: Collectible coin image.
 door.png: Door image to bank collected coins.
 
 
-🎮 Controls
+
+**🎮 Controls**
+
 Monster (Player):
 
 Move: Arrow keys (← ↑ ↓ →)
@@ -21,11 +26,16 @@ Move: Arrow keys (← ↑ ↓ →)
 Restart Game: F2
 
 
-✅ Requirements
+
+**✅ Requirements**
+
 Python 3.x
+Pygame
 
 
-🕹️ Gameplay
+
+**🕹️ Gameplay**
+
 Control the monster with arrow keys.
 
 Collect coins scattered randomly.
