@@ -12,6 +12,7 @@ class MonsterEscape:
         self.window_height = 480
         self.tile_size = 40
         self.speed = 4
+        self.robot_speed = 2
 
         self.load_images()
         self.new_game()
@@ -41,6 +42,21 @@ class MonsterEscape:
 
     def spawn_new_coin(self):
         self.coin = [random.randint(1, 14) * self.tile_size, random.randint(1, 10) * self.tile_size]
+
+    def move_robot_towards_monster(self):
+        dx = self.monster[0] - self.robot[0]
+        dy = self.monster[1] - self.robot[1]
+
+        if dx > 0:
+            self.robot[0] += min(self.robot_speed, dx)
+        elif dx < 0:
+            self.robot[0] -= min(self.robot_speed, -dx)
+
+        if dy > 0:
+            self.robot[1] += min(self.robot_speed, dy)
+        elif dy < 0:
+            self.robot[1] -= min(self.robot_speed, -dy)
+
 
     def loop(self):
             clock = pygame.time.Clock()
@@ -81,27 +97,34 @@ class MonsterEscape:
         if self.game_over:
             return
 
-     
-        if self.monster == self.robot:
+        self.move_robot_towards_monster()
+
+        monster_rect = pygame.Rect(self.monster[0], self.monster[1], self.tile_size, self.tile_size)
+        robot_rect = pygame.Rect(self.robot[0], self.robot[1], self.tile_size, self.tile_size)
+        
+        if monster_rect.colliderect(robot_rect):
             self.game_over = True
             return
 
+        if not self.has_coin and self.coin:
+            coin_rect = pygame.Rect(self.coin[0], self.coin[1], self.tile_size, self.tile_size)
+            if monster_rect.colliderect(coin_rect):
+                self.has_coin = True
+                self.door = [random.randint(1, 14) * self.tile_size, random.randint(1, 10) * self.tile_size]
+                self.coin = None 
 
-        if not self.has_coin and self.monster == self.coin:
-            self.has_coin = True
-            self.door = [random.randint(1, 14) * self.tile_size, random.randint(1, 10) * self.tile_size]
-            self.coin = None 
+        if self.has_coin and self.door:
+            door_rect = pygame.Rect(self.door[0], self.door[1], self.tile_size, self.tile_size)
+            if monster_rect.colliderect(door_rect):
+                self.score += 1
+                self.has_coin = False
+                self.door = None
+                if self.score >= 10:
+                    self.win = True
+                    self.game_over = True
+                else:
+                    self.spawn_new_coin()
 
-       
-        if self.has_coin and self.monster == self.door:
-            self.score += 1
-            self.has_coin = False
-            self.door = None
-            if self.score >= 10:
-                self.win = True
-                self.game_over = True
-            else:
-                self.spawn_new_coin()
 
     def draw_screen(self):
         self.screen.fill((128, 128, 128))
@@ -128,9 +151,9 @@ class MonsterEscape:
 
         if self.game_over:
             if self.win:
-                msg = "🎉 You Win! Press F2 to play again."
+                msg = "Winner, Winner, Chicken dinner. Press F2 to play again."
             else:
-                msg = "💀 Game Over! Press F2 to try again."
+                msg = "That's an L! Press F2 to try again."
             game_text = self.font.render(msg, True, (255, 0, 0))
             self.screen.blit(game_text, (self.window_width // 2 - game_text.get_width() // 2, self.window_height // 2))
 
